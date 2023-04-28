@@ -1,5 +1,6 @@
 package com.example.f1tracker
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Space
 import androidx.activity.ComponentActivity
@@ -22,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -67,8 +69,8 @@ fun ColumnaConBotones(){
                 .wrapContentWidth()
                 .wrapContentHeight()
         ) {
-            BotonCaja("Pilotos", R.mipmap.pilotoslogo, TAM, TAM)
-            BotonCaja("Escuderías", R.mipmap.cochelogo, TAM, TAM)
+            BotonCaja("Pilotos", R.mipmap.pilotoslogo, TAM, TAM, PilotosActivity::class.java)
+            BotonCaja("Escuderias", R.mipmap.cochelogo, TAM, TAM, EscuderiasActivity::class.java)
         }
         Row(
             modifier = Modifier
@@ -76,15 +78,22 @@ fun ColumnaConBotones(){
                 .wrapContentWidth()
                 .wrapContentHeight()
         ) {
-            BotonCaja("Circuitos", R.mipmap.circuitoslogo,TAM,TAM)
-            BotonCaja("Calendario", R.mipmap.calendariologo,TAM,TAM)
+            BotonCaja("Circuitos", R.mipmap.circuitoslogo, TAM, TAM, CircuitosActivity::class.java)
+            BotonCaja("Calendario", R.mipmap.calendariologo, TAM, TAM, CalendarioActivity::class.java)
         }
 
     }
 }
 @Composable
-fun BotonCaja(texto: String, foto: Int, alto: Int, ancho: Int){
-
+fun BotonCaja(texto: String, foto: Int, alto: Int, ancho: Int, Activity: Class<*>){
+    val contextoActual = LocalContext.current
+    var actividad: Class<*>? = null
+    when (texto){
+        "Pilotos" -> actividad = PilotosActivity::class.java
+        "Escuderias" -> actividad = EscuderiasActivity::class.java
+        "Circuitos" -> actividad = CircuitosActivity::class.java
+        "Calendario" -> actividad = CalendarioActivity::class.java
+    }
     Box(
         modifier = Modifier
             .wrapContentHeight()
@@ -92,7 +101,7 @@ fun BotonCaja(texto: String, foto: Int, alto: Int, ancho: Int){
             .padding(20.dp)
             .clickable(
                 onClick = {
-                    println("Button Clicked!")
+                    contextoActual.startActivity(Intent(contextoActual, actividad))
                 }
             )
     ) {

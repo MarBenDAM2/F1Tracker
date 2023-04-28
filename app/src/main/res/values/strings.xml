@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">F1Tracker</string>
     <string name="title_activity_menu_prinicipal">MenuPrinicipal</string>
+    <string name="title_activity_circuitos">CircuitosActivity</string>
+    <string name="title_activity_pilotos">PilotosActivity</string>
+    <string name="title_activity_escuderias">EscuderiasActivity</string>
+    <string name="title_activity_calendario">CalendarioActivity</string>
 </resources>
