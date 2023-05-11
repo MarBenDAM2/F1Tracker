@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalPagerApi::class)
-
 package com.example.f1tracker
 
 import android.content.Intent
@@ -26,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -41,17 +40,16 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
 import kotlinx.coroutines.delay
 
-class MainActivity : ComponentActivity() {
+class InicioAplicacion : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContent {
-
             Carousel()
             FondoGradiente()
         }
     }
 }
+
 @Composable
 fun FondoGradiente(){
     val contextoActual = LocalContext.current
@@ -79,7 +77,7 @@ fun FondoGradiente(){
                     start = 20.dp,
                     end = 20.dp
                 ),
-            horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
                 modifier = Modifier
@@ -165,6 +163,7 @@ fun FondoGradiente(){
     }
 }
 
+@OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Carousel(){
     val images = listOf(
