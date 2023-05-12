@@ -31,7 +31,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import kotlinx.coroutines.delay
 
 class PilotosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -166,7 +165,5 @@ class PilotosActivity : ComponentActivity() {
 
 
     }
-
-
 
 }
