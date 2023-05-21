@@ -1,4 +1,4 @@
-package com.example.f1tracker
+package com.example.f1tracker.InterfacesApp
 
 import android.content.Intent
 import android.os.Bundle
@@ -16,7 +16,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.OutlinedButton
@@ -35,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.example.f1tracker.R
 import com.google.accompanist.pager.ExperimentalPagerApi
 import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.PagerState
@@ -62,6 +65,7 @@ fun FondoGradiente(){
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
+            .verticalScroll(rememberScrollState())
             .background(
                 brush = Brush.verticalGradient(
                     colorStops = colores,

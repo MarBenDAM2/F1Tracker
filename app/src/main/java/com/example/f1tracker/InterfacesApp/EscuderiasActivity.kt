@@ -1,10 +1,13 @@
-package com.example.f1tracker
+package com.example.f1tracker.InterfacesApp
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -25,33 +28,42 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.f1tracker.llamadasAPIRetrofit.EscuderiaGETRetrofit
 
-class PilotosActivity : ComponentActivity() {
+class EscuderiasActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val PilotosViewModel by viewModels<PilotosViewModel>()
-        setContent {
 
+        super.onCreate(savedInstanceState)
+
+        val EscuderiaViewModel by viewModels<EscuderiaGETRetrofit>()
+        setContent {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
                     .background(color = Color.DarkGray),
             ) {
-                PilotoInformacion(PilotosViewModel)
+                EscuderiaInformacion(EscuderiaViewModel)
             }
 
         }
+
     }
     @Composable
-    fun PilotoInformacion(PilotosViewModel: PilotosViewModel) {
+    fun EscuderiaInformacion(EscuderiaViewModel: EscuderiaGETRetrofit){
+        val contextoActual = LocalContext.current
         var mostrarInfo by remember { mutableStateOf(false) }
+
 
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////
         Row(
@@ -65,14 +77,14 @@ class PilotosActivity : ComponentActivity() {
                 onValueChange = {
                     texto_busqueda.value = it
                 },
-                label = { Text(text = "Busca un piloto", color = Color.White) },
+                label = { Text(text = "Busca una escuderia", color = Color.White) },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        PilotosViewModel.busquedaPorNombre(texto_busqueda.value)
+                        EscuderiaViewModel.busquedaPorNombre(texto_busqueda.value)
                         mostrarInfo = true
                     }
                 ),
@@ -91,25 +103,24 @@ class PilotosActivity : ComponentActivity() {
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////
 
         if (mostrarInfo){
-            /////////////////////////// INFORMACIÓN DEL PILOTO ///////////////////////////
+            /////////////////////////// INFORMACIÓN DEL CONSTRUCTOR ///////////////////////////
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .background(color = Color.DarkGray),
-                horizontalAlignment = androidx.compose.ui.Alignment.CenterHorizontally
+                horizontalAlignment = Alignment.CenterHorizontally
             ){
-                /////////////////////////// IMAGEN DEL PILOTO ///////////////////////////
+                /////////////////////////// IMAGEN DEL CONSTRUCTOR ///////////////////////////
                 AsyncImage(
-                    model = PilotosViewModel.pilotoLink(),
-                    contentDescription = "Imagen del piloto",
+                    model = EscuderiaViewModel.linkFoto,
+                    contentDescription = "Imagen del equipo",
                     modifier = Modifier
                         .padding(top = 50.dp),
                 )
-                /////////////////////////// IMAGEN DEL PILOTO ///////////////////////////
+                /////////////////////////// IMAGEN DEL CONSTRUCTOR ///////////////////////////
                 Spacer(modifier = Modifier.height(30.dp))
-
-                /////////////////////////// NOMBRE Y NÚMERO DEL PILOTO ///////////////////////////
+                /////////////////////////// NOMBRE Y NACIONALIDAD DEL CONSTRUCTOR ///////////////////////////
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -117,53 +128,50 @@ class PilotosActivity : ComponentActivity() {
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = "Nombre: ${PilotosViewModel.nom_piloto}",
+                        text = "Nombre: ${EscuderiaViewModel.nom_escuderia}",
                         color = Color.White
                     )
                     Text(
-                        text = "Número: ${PilotosViewModel.num_perma}",
+                        text = "Nacionalidad: ${EscuderiaViewModel.nacionalidad}",
                         color = Color.White
                     )
                 }
-                /////////////////////////// NOMBRE Y NÚMERO DEL PILOTO ///////////////////////////
+                /////////////////////////// NOMBRE Y NACIONALIDAD DEL CONSTRUCTOR ///////////////////////////
 
-                /////////////////////////// NACIMIENTO Y NOMBRE CORTO DEL PILOTO ///////////////////////////
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = 10.dp, end = 10.dp, top = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "Fecha de nacimiento: ${PilotosViewModel.fecha_nacimiento}",
-                        color = Color.White
-                    )
-                    Text(
-                        text = "Nombre corto: ${PilotosViewModel.nomCortoPiloto}",
-                        color = Color.White
-                    )
-                }
-                /////////////////////////// NACIMIENTO Y NOMBRE CORTO DEL PILOTO ///////////////////////////
-
-                /////////////////////////// NACIONALIDAD DEL PILOTO ///////////////////////////
+                /////////////////////////// INFORMACIÓN DEL CONSTRUCTOR ///////////////////////////
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, top = 10.dp),
                     horizontalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = "Nacionalidad: ${PilotosViewModel.nacionalidad}",
-                        color = Color.White
-                    )
-                }
-                /////////////////////////// NACIONALIDAD DEL PILOTO ///////////////////////////
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Text(
+                            text = "Más información:",
+                            color = Color.White
+                        )
 
+                        Text(
+                            text = EscuderiaViewModel.urlEscuderia,
+                            modifier = Modifier
+                                .clickable(
+                                    onClick = {
+                                        val uri = Uri.parse(EscuderiaViewModel.urlEscuderia)
+                                        contextoActual.startActivity(Intent(Intent.ACTION_VIEW, uri))
+                                    }
+                                ),
+                            color = Color.White,
+                            textDecoration = TextDecoration.Underline
+                        )
+                    }
+                }
+                /////////////////////////// INFORMACIÓN DEL CONSTRUCTOR ///////////////////////////
             }
-            /////////////////////////// INFORMACIÓN DEL PILOTO ///////////////////////////
+            /////////////////////////// INFORMACIÓN DEL CONSTRUCTOR ///////////////////////////
         }
 
-
     }
-
 }
+

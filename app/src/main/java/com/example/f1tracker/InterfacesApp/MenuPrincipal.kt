@@ -1,4 +1,4 @@
-package com.example.f1tracker
+package com.example.f1tracker.InterfacesApp
 
 import android.content.Intent
 import android.os.Bundle
@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,6 +29,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.f1tracker.R
 
 class MenuPrinicipal : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +48,8 @@ fun ColumnaConBotones(){
                 color = Color.DarkGray
             )
             .fillMaxWidth()
-            .fillMaxHeight(),
+            .fillMaxHeight()
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ){
         Column(
@@ -68,8 +72,8 @@ fun ColumnaConBotones(){
                 .wrapContentWidth()
                 .wrapContentHeight()
         ) {
-            BotonCaja("Pilotos", R.mipmap.pilotoslogo, TAM, TAM, PilotosActivity::class.java)
-            BotonCaja("Escuderias", R.mipmap.cochelogo, TAM, TAM, EscuderiasActivity::class.java)
+            BotonCaja("Pilotos", R.mipmap.pilotoslogo, TAM, TAM)
+            BotonCaja("Escuderias", R.mipmap.cochelogo, TAM, TAM)
         }
         Row(
             modifier = Modifier
@@ -77,14 +81,14 @@ fun ColumnaConBotones(){
                 .wrapContentWidth()
                 .wrapContentHeight()
         ) {
-            BotonCaja("Circuitos", R.mipmap.circuitoslogo, TAM, TAM, CircuitosActivity::class.java)
-            BotonCaja("Calendario", R.mipmap.calendariologo, TAM, TAM, CalendarioActivity::class.java)
+            BotonCaja("Circuitos", R.mipmap.circuitoslogo, TAM, TAM)
+            BotonCaja("Calendario", R.mipmap.calendariologo, TAM, TAM)
         }
 
     }
 }
 @Composable
-fun BotonCaja(texto: String, foto: Int, alto: Int, ancho: Int, Activity: Class<*>){
+fun BotonCaja(texto: String, foto: Int, alto: Int, ancho: Int){
     val contextoActual = LocalContext.current
     var actividad: Class<*>? = null
     when (texto){

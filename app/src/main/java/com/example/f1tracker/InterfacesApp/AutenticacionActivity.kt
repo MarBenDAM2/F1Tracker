@@ -1,4 +1,4 @@
-package com.example.f1tracker
+package com.example.f1tracker.InterfacesApp
 
 import android.content.Intent
 import android.os.Bundle
@@ -66,7 +66,7 @@ fun Autenticacion() {
             .background(color = Color.DarkGray),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        var email by rememberSaveable { mutableStateOf("") }
+        var email by rememberSaveable { mutableStateOf("a@gmail.com") }
         Text(
             text = "Registrate o inicia sesion",
             color = Color.White,
@@ -81,19 +81,15 @@ fun Autenticacion() {
 
             TextField(
                 value = email,
-
                 onValueChange = { email = it },
-
                 label = {
                     Text(
                         "Email", color = Color.White
                     )
                 },
-
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Email
                 ),
-
                 modifier = Modifier
                     .padding(16.dp),
                 colors = TextFieldDefaults.textFieldColors(
@@ -105,19 +101,16 @@ fun Autenticacion() {
                 )
             )
 
-            var contra by rememberSaveable { mutableStateOf("") }
+            var contra by rememberSaveable { mutableStateOf("123456") }
 
             TextField(
                 value = contra,
-
                 onValueChange = { contra = it },
-
                 label = {
                     Text(
                         "Contraseña", color = Color.White
                     )
                 },
-
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Password
                 ),
@@ -215,8 +208,6 @@ fun Autenticacion() {
                     Text(text = "Error al iniciar sesión")
                 }
             }
-
         }
     }
-
 }

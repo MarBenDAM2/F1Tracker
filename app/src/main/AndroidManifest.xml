@@ -13,39 +13,40 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.F1Tracker"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".InicioAplicacion"
+            android:name=".InterfacesApp.InicioAplicacion"
             android:exported="false"
             android:label="@string/title_activity_inicio_aplicacion"
             android:theme="@style/Theme.F1Tracker" />
         <activity
-            android:name=".CalendarioActivity"
+            android:name=".InterfacesApp.CalendarioActivity"
             android:exported="false"
             android:label="@string/title_activity_calendario"
             android:theme="@style/Theme.F1Tracker" />
         <activity
-            android:name=".EscuderiasActivity"
+            android:name=".InterfacesApp.EscuderiasActivity"
             android:exported="false"
             android:label="@string/title_activity_escuderias"
             android:theme="@style/Theme.F1Tracker" />
         <activity
-            android:name=".PilotosActivity"
+            android:name=".InterfacesApp.PilotosActivity"
             android:exported="false"
             android:label="@string/title_activity_pilotos"
             android:theme="@style/Theme.F1Tracker" />
         <activity
-            android:name=".CircuitosActivity"
+            android:name=".InterfacesApp.CircuitosActivity"
             android:exported="false"
             android:label="@string/title_activity_circuitos"
             android:theme="@style/Theme.F1Tracker" />
         <activity
-            android:name=".MenuPrinicipal"
+            android:name=".InterfacesApp.MenuPrinicipal"
             android:exported="false"
             android:label="@string/title_activity_menu_prinicipal"
             android:theme="@style/Theme.F1Tracker" />
         <activity
-            android:name=".AutenticacionActivity"
+            android:name=".InterfacesApp.AutenticacionActivity"
             android:exported="true"
             android:label="@string/app_name"
             android:theme="@style/Theme.F1Tracker">
