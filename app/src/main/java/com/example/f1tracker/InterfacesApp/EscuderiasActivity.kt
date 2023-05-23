@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -32,12 +33,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.example.f1tracker.R
 import com.example.f1tracker.llamadasAPIRetrofit.EscuderiaGETRetrofit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class EscuderiasActivity : ComponentActivity() {
 
@@ -62,6 +71,7 @@ class EscuderiasActivity : ComponentActivity() {
     @Composable
     fun EscuderiaInformacion(EscuderiaViewModel: EscuderiaGETRetrofit){
         val contextoActual = LocalContext.current
+        val TAM_IMAGEN = 250.dp
         var mostrarInfo by remember { mutableStateOf(false) }
 
 
@@ -77,14 +87,22 @@ class EscuderiasActivity : ComponentActivity() {
                 onValueChange = {
                     texto_busqueda.value = it
                 },
-                label = { Text(text = "Busca una escuderia", color = Color.White) },
+                label = {
+                    Text(
+                        text = "Busca una escuderia",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
+                    )
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        EscuderiaViewModel.busquedaPorNombre(texto_busqueda.value)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            EscuderiaViewModel.busquedaPorNombre(texto_busqueda.value)
+                        }
                         mostrarInfo = true
                     }
                 ),
@@ -97,6 +115,10 @@ class EscuderiasActivity : ComponentActivity() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
+                ),
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             )
         }
@@ -116,7 +138,9 @@ class EscuderiasActivity : ComponentActivity() {
                     model = EscuderiaViewModel.linkFoto,
                     contentDescription = "Imagen del equipo",
                     modifier = Modifier
-                        .padding(top = 50.dp),
+                        .padding(top = 50.dp)
+                        .width(TAM_IMAGEN)
+                        .height(TAM_IMAGEN),
                 )
                 /////////////////////////// IMAGEN DEL CONSTRUCTOR ///////////////////////////
                 Spacer(modifier = Modifier.height(30.dp))
@@ -129,11 +153,13 @@ class EscuderiasActivity : ComponentActivity() {
                 ) {
                     Text(
                         text = "Nombre: ${EscuderiaViewModel.nom_escuderia}",
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                     Text(
                         text = "Nacionalidad: ${EscuderiaViewModel.nacionalidad}",
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 }
                 /////////////////////////// NOMBRE Y NACIONALIDAD DEL CONSTRUCTOR ///////////////////////////
@@ -150,9 +176,9 @@ class EscuderiasActivity : ComponentActivity() {
                     ) {
                         Text(
                             text = "Más información:",
-                            color = Color.White
+                            color = Color.White,
+                            fontFamily = FontFamily(Font(R.font.formula1regular))
                         )
-
                         Text(
                             text = EscuderiaViewModel.urlEscuderia,
                             modifier = Modifier
@@ -163,7 +189,9 @@ class EscuderiasActivity : ComponentActivity() {
                                     }
                                 ),
                             color = Color.White,
-                            textDecoration = TextDecoration.Underline
+                            textDecoration = TextDecoration.Underline,
+                            fontFamily = FontFamily(Font(R.font.formula1regular)),
+                            textAlign = TextAlign.Center
                         )
                     }
                 }

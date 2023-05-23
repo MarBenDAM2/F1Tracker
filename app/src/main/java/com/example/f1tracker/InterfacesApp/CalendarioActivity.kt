@@ -1,11 +1,14 @@
 package com.example.f1tracker.InterfacesApp
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,12 +34,20 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.f1tracker.R
 import com.example.f1tracker.llamadasAPIRetrofit.CalendarioGETRetrofit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Calendar
 
 class CalendarioActivity : ComponentActivity() {
@@ -60,13 +71,18 @@ class CalendarioActivity : ComponentActivity() {
 
     @Composable
     fun CalendarioInformacion(CalendarioViewModel: CalendarioGETRetrofit) {
-        val ANCHO_CELDA = 230.dp
+        val contextoActual = LocalContext.current
+
+        val ANCHO_CELDA_NOMBRE = 230.dp
+        val ANCHO_CELDA_FECHA = 100.dp
         val ANCHO_NUMERO = 50.dp
         val ALTO_FECHANUMERO = 35.dp
+        val ALTO_NOMBRES = 22.dp
+        val TAM_TEXTO = 10.sp
 
         /////////////// SELECCION DE AÑO //////////
         var mostrarInfo by remember { mutableStateOf(false) }
-        var yearActual = Calendar.getInstance().get(Calendar.YEAR)
+        val yearActual = Calendar.getInstance().get(Calendar.YEAR)
 
         Row(
             modifier = Modifier
@@ -79,14 +95,22 @@ class CalendarioActivity : ComponentActivity() {
                 onValueChange = {
                     texto_busqueda.value = it
                 },
-                label = { androidx.compose.material.Text(text = "Escribe un año entre 1950 y $yearActual", color = Color.White) },
+                label = {
+                    Text(
+                        text = "Escribe un año entre 1950 y $yearActual",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
+                    )
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Number,
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        CalendarioViewModel.busquedaPorYear(texto_busqueda.value)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            CalendarioViewModel.busquedaPorYear(texto_busqueda.value)
+                        }
                         mostrarInfo = true
                     }
                 ),
@@ -99,6 +123,10 @@ class CalendarioActivity : ComponentActivity() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
+                ),
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             )
         }
@@ -111,19 +139,23 @@ class CalendarioActivity : ComponentActivity() {
         /////////////// SELECCION DE AÑO //////////
 
         //DATOS//
-        if (mostrarInfo) {
+        if (CalendarioViewModel.terminado) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(10.dp)
+                    .padding(5.dp)
             ){
                 items(CalendarioViewModel.listaCarreras.size){
                     Row(
                         modifier = Modifier
                             .fillMaxHeight()
                             .fillMaxWidth()
-                            .padding(vertical = 10.dp),
+                            .padding(vertical = 10.dp)
+                            .clickable(onClick = {
+                                val uri = Uri.parse(CalendarioViewModel.listaCarreras[it].urlCarrera)
+                                contextoActual.startActivity(Intent(Intent.ACTION_VIEW, uri))
+                            }),
                         horizontalArrangement = Arrangement.Start
                     ) {
                         Column(
@@ -143,14 +175,15 @@ class CalendarioActivity : ComponentActivity() {
                             Text(
                                 text = CalendarioViewModel.listaCarreras[it].numCarrera,
                                 color = Color.White,
-                                fontSize = 13.sp,
-                                textAlign = TextAlign.End
+                                fontSize = TAM_TEXTO,
+                                textAlign = TextAlign.End,
+                                fontFamily = FontFamily(Font(R.font.formula1regular))
                             )
                         }
 
                         Column(
                             modifier = Modifier
-                                .width(ANCHO_CELDA)
+                                .width(ANCHO_CELDA_NOMBRE)
                                 .wrapContentHeight()
                                 .border(
                                     width = 1.dp,
@@ -159,17 +192,19 @@ class CalendarioActivity : ComponentActivity() {
                             horizontalAlignment = Alignment.CenterHorizontally,
                             verticalArrangement = Arrangement.Center,
                         ){
-
                             Row(
                                 modifier = Modifier
                                     .wrapContentWidth()
-                                    .wrapContentHeight(),
+                                    .height(ALTO_NOMBRES),
                             ){
                                 Text(
                                     text = CalendarioViewModel.listaCarreras[it].nombreCarrera,
                                     color = Color.White,
-                                    fontSize = 13.sp,
-                                    textAlign = TextAlign.End
+                                    fontSize = TAM_TEXTO,
+                                    textAlign = TextAlign.End,
+                                    fontFamily = FontFamily(Font(R.font.formula1regular)),
+                                    modifier = Modifier
+                                        .padding(top = 1.dp)
                                 )
                             }
                             Row(
@@ -180,15 +215,18 @@ class CalendarioActivity : ComponentActivity() {
                                 Text(
                                     text = CalendarioViewModel.listaCarreras[it].nombreCircuito,
                                     color = Color.White,
-                                    fontSize = 13.sp,
-                                    textAlign = TextAlign.End
+                                    fontSize = TAM_TEXTO,
+                                    textAlign = TextAlign.End,
+                                    fontFamily = FontFamily(Font(R.font.formula1regular)),
+                                    modifier = Modifier
+                                        .padding(bottom = 1.dp)
                                 )
                             }
                         }
 
                         Column(
                             modifier = Modifier
-                                .wrapContentWidth()
+                                .width(ANCHO_CELDA_FECHA)
                                 .height(ALTO_FECHANUMERO)
                                 .padding(horizontal = 10.dp)
                                 .border(
@@ -201,8 +239,9 @@ class CalendarioActivity : ComponentActivity() {
                             Text(
                                 text = CalendarioViewModel.listaCarreras[it].fechaCarrera,
                                 color = Color.White,
-                                fontSize = 12.5.sp,
-                                textAlign = TextAlign.End,
+                                fontSize = TAM_TEXTO,
+                                textAlign = TextAlign.Center,
+                                fontFamily = FontFamily(Font(R.font.formula1regular)),
                                 modifier = Modifier
                                     .padding(horizontal = 4.dp)
                             )

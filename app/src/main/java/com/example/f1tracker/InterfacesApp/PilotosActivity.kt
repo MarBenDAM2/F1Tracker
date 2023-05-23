@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardActions
@@ -22,18 +23,22 @@ import androidx.compose.material.Text
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import com.example.f1tracker.R
 import com.example.f1tracker.llamadasAPIRetrofit.PilotosGETRetrofit
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PilotosActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,8 +60,8 @@ class PilotosActivity : ComponentActivity() {
     }
     @Composable
     fun PilotoInformacion(PilotosGETRetrofit: PilotosGETRetrofit) {
-        var mostrarInfo by remember { mutableStateOf(false) }
 
+        val TAM_IMAGEN = 250.dp
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////
         Row(
             modifier = Modifier
@@ -69,15 +74,22 @@ class PilotosActivity : ComponentActivity() {
                 onValueChange = {
                     texto_busqueda.value = it
                 },
-                label = { Text(text = "Busca un piloto", color = Color.White) },
+                label = {
+                    Text(
+                        text = "Busca un piloto",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
+                    )
+                },
                 keyboardOptions = KeyboardOptions(
                     keyboardType = KeyboardType.Text,
                     imeAction = ImeAction.Search
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        PilotosGETRetrofit.busquedaPorNombre(texto_busqueda.value)
-                        mostrarInfo = true
+                        CoroutineScope(Dispatchers.IO).launch{
+                            PilotosGETRetrofit.busquedaPorNombre(texto_busqueda.value)
+                        }
                     }
                 ),
                 modifier = Modifier
@@ -89,12 +101,16 @@ class PilotosActivity : ComponentActivity() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
+                ),
+                textStyle = androidx.compose.ui.text.TextStyle(
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             )
         }
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////
 
-        if (mostrarInfo){
+        if (PilotosGETRetrofit.encontrado){
             /////////////////////////// INFORMACIÓN DEL PILOTO ///////////////////////////
             Column(
                 modifier = Modifier
@@ -108,7 +124,9 @@ class PilotosActivity : ComponentActivity() {
                     model = PilotosGETRetrofit.linkFoto,
                     contentDescription = "Imagen del piloto",
                     modifier = Modifier
-                        .padding(top = 50.dp),
+                        .padding(top = 50.dp)
+                        .width(TAM_IMAGEN)
+                        .height(TAM_IMAGEN),
                 )
                 /////////////////////////// IMAGEN DEL PILOTO ///////////////////////////
                 Spacer(modifier = Modifier.height(30.dp))
@@ -118,15 +136,24 @@ class PilotosActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = "Nombre: ${PilotosGETRetrofit.nom_piloto}",
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
+                }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
                     Text(
                         text = "Número: ${PilotosGETRetrofit.num_perma}",
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 }
                 /////////////////////////// NOMBRE Y NÚMERO DEL PILOTO ///////////////////////////
@@ -136,20 +163,27 @@ class PilotosActivity : ComponentActivity() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 10.dp, end = 10.dp, top = 10.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    horizontalArrangement = Arrangement.Center
                 ) {
                     Text(
                         text = "Fecha de nacimiento: ${PilotosGETRetrofit.fecha_nacimiento}",
-                        color = Color.White
-                    )
-                    Text(
-                        text = "Nombre corto: ${PilotosGETRetrofit.nomCortoPiloto}",
-                        color = Color.White
+                        color = Color.White,
+                        fontSize = 13.sp,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 }
-                /////////////////////////// NACIMIENTO Y NOMBRE CORTO DEL PILOTO ///////////////////////////
-
-                /////////////////////////// NACIONALIDAD DEL PILOTO ///////////////////////////
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 10.dp, end = 10.dp, top = 10.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Text(
+                        text = "Nombre corto: ${PilotosGETRetrofit.nomCortoPiloto}",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
+                    )
+                }
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -158,13 +192,11 @@ class PilotosActivity : ComponentActivity() {
                 ) {
                     Text(
                         text = "Nacionalidad: ${PilotosGETRetrofit.nacionalidad}",
-                        color = Color.White
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 }
-                /////////////////////////// NACIONALIDAD DEL PILOTO ///////////////////////////
-
             }
-            /////////////////////////// INFORMACIÓN DEL PILOTO ///////////////////////////
         }
 
 

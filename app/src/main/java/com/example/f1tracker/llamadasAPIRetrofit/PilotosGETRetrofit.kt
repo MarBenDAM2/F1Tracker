@@ -20,6 +20,7 @@ class PilotosGETRetrofit : ViewModel() {
     var fecha_nacimiento by mutableStateOf("")
     var nacionalidad by mutableStateOf("")
     var linkFoto by mutableStateOf("")
+    var encontrado by mutableStateOf(false)
 
 
     fun getRetrofit(): Retrofit {
@@ -29,30 +30,34 @@ class PilotosGETRetrofit : ViewModel() {
             .build()
     }
 
-    fun busquedaPorNombre(busqueda:String){
+    fun busquedaPorNombre(busqueda: String) {
         CoroutineScope(Dispatchers.IO).launch {
-            val llamada = getRetrofit().create(APIpiloto::class.java).pilotoInformacion("${busqueda.replace("\\s+".toRegex(),"_")}.json")
+            val llamada = getRetrofit().create(APIpiloto::class.java)
+                .pilotoInformacion("${busqueda.replace("\\s+".toRegex(), "_")}.json")
             try {
                 val piloto = llamada.body()
-                if (llamada.isSuccessful){
+                if (llamada.isSuccessful) {
                     if (piloto != null) {
-                        idPiloto = piloto.MRData.DriverTable.Piloto[0].idPiloto
-                        println(idPiloto)
-                        nom_piloto = piloto.MRData.DriverTable.Piloto[0].nomPiloto + " " + piloto.MRData.DriverTable.Piloto[0].apellidoPiloto
+                        idPiloto = piloto.MRData.DriverTable.idPiloto
+                        nom_piloto =
+                            piloto.MRData.DriverTable.Piloto[0].nomPiloto + " " +
+                                    piloto.MRData.DriverTable.Piloto[0].apellidoPiloto
 
                         when (piloto.MRData.DriverTable.Piloto[0].numPermanente) {
                             null -> {
                                 num_perma = "N/D"
                             }
+
                             else -> {
                                 num_perma = piloto.MRData.DriverTable.Piloto[0].numPermanente
                             }
                         }
 
-                        when (piloto.MRData.DriverTable.Piloto[0].nomCortoPiloto){
+                        when (piloto.MRData.DriverTable.Piloto[0].nomCortoPiloto) {
                             null -> {
                                 nomCortoPiloto = "N/D"
                             }
+
                             else -> {
                                 nomCortoPiloto = piloto.MRData.DriverTable.Piloto[0].nomCortoPiloto
                             }
@@ -64,7 +69,7 @@ class PilotosGETRetrofit : ViewModel() {
                         pilotoLink()
                     }
                 }
-            } catch (IndexOutOfBoundsException: Exception){
+            } catch (IndexOutOfBoundsException: Exception) {
                 println("No se encontró el piloto")
             }
         }
@@ -73,13 +78,24 @@ class PilotosGETRetrofit : ViewModel() {
 
     fun pilotoLink() {
 
-        var referencia = FirebaseStorage.getInstance().getReference("pilotos/${idPiloto}.jpg")
+        val referencia = FirebaseStorage.getInstance().getReference("pilotos/${idPiloto}.jpg")
 
-        referencia.downloadUrl.addOnSuccessListener {
-            linkFoto = it.toString()
-        }.addOnFailureListener {
-            linkFoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+        CoroutineScope(Dispatchers.IO).launch {
+
+            referencia.downloadUrl.addOnSuccessListener {
+
+                linkFoto = it.toString()
+
+            }.addOnFailureListener {
+
+                linkFoto =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+
+            }
+
         }
+
+        encontrado = true
 
     }
 

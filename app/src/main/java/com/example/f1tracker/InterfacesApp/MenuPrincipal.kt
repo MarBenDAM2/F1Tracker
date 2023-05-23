@@ -6,15 +6,16 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
@@ -26,7 +27,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.f1tracker.R
@@ -35,99 +39,146 @@ class MenuPrinicipal : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            ColumnaConBotones()
+            MenuInicioEleccion()
         }
     }
 }
+
 @Composable
-fun ColumnaConBotones(){
-    val TAM = 120
+@Preview
+fun MenuInicioEleccion(){
+
     Column(
         modifier = Modifier
-            .background(
-                color = Color.DarkGray
-            )
-            .fillMaxWidth()
+            .wrapContentWidth()
             .fillMaxHeight()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Column(
-            Modifier.padding(top = 60.dp)
+            .background(Color.DarkGray),
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Row(
+            modifier = Modifier
+                .wrapContentWidth()
+                .wrapContentHeight()
+                .padding(top = 30.dp),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "F1 TRACKER",
-                modifier = Modifier
-                    .wrapContentWidth()
-                    .wrapContentHeight(),
-                textAlign = TextAlign.Center,
+                fontSize = 30.sp,
                 color = Color.White,
-                fontSize = 40.sp
+                textAlign = TextAlign.Center,
+                fontFamily = FontFamily(Font(R.font.formula1bold))
             )
         }
 
-        Row(
+        Column(
             modifier = Modifier
-                .padding(top = 60.dp)
-                .wrapContentWidth()
+                .fillMaxWidth()
                 .wrapContentHeight()
+                .verticalScroll(rememberScrollState())
+                .padding(start = 10.dp, end = 10.dp, top = 20.dp),
         ) {
-            BotonCaja("Pilotos", R.mipmap.pilotoslogo, TAM, TAM)
-            BotonCaja("Escuderias", R.mipmap.cochelogo, TAM, TAM)
+            Opcion(
+                "PILOTOS",
+                "Aqui encontrarás información básica sobre los pilotos de la F1",
+                R.mipmap.pilotoslogo
+            )
+            Opcion(
+                "EQUIPOS",
+                "Aqui encontrarás información básica sobre los equipos de la F1",
+                R.mipmap.cochelogo
+            )
+            Opcion(
+                "CIRCUITOS",
+                "Aqui encontrarás información básica sobre los circuitos de la F1",
+                R.mipmap.circuitoslogo
+            )
+            Opcion(
+                "CALENDARIO",
+                "Aqui encontrarás todos los calendarios de la Formula 1 desde 1950 hasta hoy",
+                R.mipmap.calendariologo
+            )
         }
-        Row(
-            modifier = Modifier
-                .padding(top = 60.dp)
-                .wrapContentWidth()
-                .wrapContentHeight()
-        ) {
-            BotonCaja("Circuitos", R.mipmap.circuitoslogo, TAM, TAM)
-            BotonCaja("Calendario", R.mipmap.calendariologo, TAM, TAM)
-        }
-
     }
 }
+
 @Composable
-fun BotonCaja(texto: String, foto: Int, alto: Int, ancho: Int){
+fun Opcion(textoApartado: String, descripcionApartado: String, imagenApartado: Int){
+
     val contextoActual = LocalContext.current
+
     var actividad: Class<*>? = null
-    when (texto){
-        "Pilotos" -> actividad = PilotosActivity::class.java
-        "Escuderias" -> actividad = EscuderiasActivity::class.java
-        "Circuitos" -> actividad = CircuitosActivity::class.java
-        "Calendario" -> actividad = CalendarioActivity::class.java
+
+    when (textoApartado){
+        "PILOTOS" -> {
+            actividad = PilotosActivity::class.java
+        }
+        "EQUIPOS" -> {
+            actividad = EscuderiasActivity::class.java
+        }
+        "CIRCUITOS" -> {
+            actividad = CircuitosActivity::class.java
+        }
+        "CALENDARIO" -> {
+            actividad = CalendarioActivity::class.java
+        }
     }
-    Box(
+
+    Row(
         modifier = Modifier
-            .wrapContentHeight()
             .wrapContentWidth()
+            .wrapContentHeight()
             .padding(20.dp)
+            .border(1.dp, Color.White)
             .clickable(
                 onClick = {
                     contextoActual.startActivity(Intent(contextoActual, actividad))
                 }
-            )
-    ) {
+            ),
+        verticalAlignment = Alignment.CenterVertically
+    ){
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .width(250.dp)
+        ) {
+            Row(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .padding(vertical = 10.dp, horizontal = 10.dp)
+            ) {
+                Text(
+                    text = textoApartado,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1bold))
+                )
+            }
+            Row(
+                modifier = Modifier
+                    .padding(top = 5.dp, bottom = 10.dp, start = 10.dp, end = 10.dp)
+            ) {
+                Text(
+                    text = descripcionApartado,
+                    fontSize = 14.sp,
+                    color = Color.White,
+                    textAlign = TextAlign.Left,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
+                )
+            }
+        }
+        Column(
+            modifier = Modifier
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.Center,
         ) {
             Image(
-                painter = painterResource(foto),
-                contentDescription = null,
+                painter = painterResource(id = imagenApartado),
+                contentDescription = "Piloto",
                 modifier = Modifier
-                    .size(ancho.dp, alto.dp)
-            )
-            Spacer(modifier = Modifier.size(50.dp))
-            Text(
-                text = texto,
-                modifier = Modifier
-                    .wrapContentHeight(),
-                textAlign = TextAlign.Center,
-                color = Color.White,
-                fontSize = 25.sp,
+                    .size(100.dp)
+                    .padding(10.dp)
             )
         }
-
     }
-
 }

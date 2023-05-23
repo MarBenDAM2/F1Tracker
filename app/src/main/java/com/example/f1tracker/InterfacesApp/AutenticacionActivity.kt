@@ -15,14 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.AlertDialog
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
+import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Snackbar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,12 +32,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.f1tracker.R
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class AutenticacionActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -53,12 +59,6 @@ fun Autenticacion() {
     val contextoActual = LocalContext.current
     var mostrarError by remember { mutableStateOf(false) }
 
-    LaunchedEffect(mostrarError){
-        if(mostrarError){
-            delay(2000)
-            mostrarError = false
-        }
-    }
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -66,11 +66,13 @@ fun Autenticacion() {
             .background(color = Color.DarkGray),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        var email by rememberSaveable { mutableStateOf("a@gmail.com") }
+        var email by rememberSaveable { mutableStateOf("") }
         Text(
             text = "Registrate o inicia sesion",
             color = Color.White,
-            modifier = Modifier.padding(top = 16.dp)
+            modifier = Modifier.padding(top = 40.dp),
+            fontFamily = FontFamily(Font(R.font.formula1regular)),
+            fontSize = 20.sp
         )
         Column (
              modifier = Modifier
@@ -84,7 +86,9 @@ fun Autenticacion() {
                 onValueChange = { email = it },
                 label = {
                     Text(
-                        "Email", color = Color.White
+                        text = "Email",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 },
                 keyboardOptions = KeyboardOptions(
@@ -98,17 +102,23 @@ fun Autenticacion() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
+                ),
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             )
 
-            var contra by rememberSaveable { mutableStateOf("123456") }
+            var contra by rememberSaveable { mutableStateOf("") }
 
             TextField(
                 value = contra,
                 onValueChange = { contra = it },
                 label = {
                     Text(
-                        "Contraseña", color = Color.White
+                        text = "Contraseña",
+                        color = Color.White,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 },
                 keyboardOptions = KeyboardOptions(
@@ -121,6 +131,10 @@ fun Autenticacion() {
                     unfocusedIndicatorColor = Color.Transparent,
                     disabledIndicatorColor = Color.Transparent,
                     cursorColor = Color.White
+                ),
+                textStyle = TextStyle(
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             )
 
@@ -149,6 +163,9 @@ fun Autenticacion() {
                                     mostrarError = true
                                 }
                             }
+                        } else {
+                            //Mostrar mensaje de error
+                            mostrarError = true
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -160,7 +177,8 @@ fun Autenticacion() {
                     Text(
                         text = "Iniciar Sesión",
                         color = Color.White,
-                        fontSize = 15.sp
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
                 }
 
@@ -175,12 +193,14 @@ fun Autenticacion() {
                     ,
                     onClick = {
                         if (email.isNotEmpty() && contra.isNotEmpty()){
-                            FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, contra).addOnCompleteListener{
-                                if (it.isSuccessful){
-                                    contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
-                                } else {
-                                    //Mostrar mensaje de error
-                                    mostrarError = true
+                            CoroutineScope(Dispatchers.IO).launch{
+                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, contra).addOnCompleteListener{
+                                    if (it.isSuccessful){
+                                        contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
+                                    } else {
+                                        //Mostrar mensaje de error
+                                        mostrarError = true
+                                    }
                                 }
                             }
                         }
@@ -194,20 +214,56 @@ fun Autenticacion() {
                     Text(
                         text = "Registro",
                         color = Color.White,
-                        fontSize = 15.sp
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
                     )
-                }
-            }
-
-            if (mostrarError) {
-                Snackbar(
-                    modifier = Modifier
-                        .align(alignment = Alignment.CenterHorizontally)
-                        .fillMaxWidth()
-                ) {
-                    Text(text = "Error al iniciar sesión")
                 }
             }
         }
     }
+
+    if(mostrarError){
+        AlertDialog(
+            backgroundColor = Color.DarkGray,
+            onDismissRequest = {
+                mostrarError = false
+            },
+            title = {
+                Text(
+                    text = "Error",
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
+                )
+            },
+            text = {
+                Text(
+                    text = "Ha ocurrido un error con el registro o el inicio de sesión, " +
+                            "por favor compruebe la información ingresada",
+                    color = Color.White,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
+                )
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        mostrarError = false
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(0),
+                    border = BorderStroke(1.dp, Color.White)
+                ) {
+                    Text(
+                        text = "Aceptar",
+                        color = Color.White,
+                        fontSize = 15.sp,
+                        fontFamily = FontFamily(Font(R.font.formula1regular))
+                    )
+                }
+            }
+        )
+    }
+
+
 }

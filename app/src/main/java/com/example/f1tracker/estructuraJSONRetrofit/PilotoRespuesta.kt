@@ -9,10 +9,10 @@ data class MRData(
     @SerializedName("DriverTable") val DriverTable: DriverTable
 )
 data class DriverTable(
+    @SerializedName("driverId") val idPiloto: String,
     @SerializedName("Drivers") val Piloto: List<Driver>
 )
 data class Driver(
-    @SerializedName("driverId") val idPiloto: String,
     @SerializedName("permanentNumber") val numPermanente: String,
     @SerializedName("code") val nomCortoPiloto: String,
     @SerializedName("givenName") val nomPiloto: String,

@@ -32,6 +32,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -106,7 +108,8 @@ fun FondoGradiente(){
                     text = "Bienvenido a F1 Tracker",
                     textAlign = TextAlign.Center,
                     color = Color.White,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             }
             Spacer(
@@ -137,7 +140,8 @@ fun FondoGradiente(){
                             "escuderias y carreras de la Fórmula 1",
                     color = Color.White,
                     textAlign = TextAlign.Center,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             }
             OutlinedButton(
@@ -160,7 +164,9 @@ fun FondoGradiente(){
                 Text(
                     text = "Iniciar",
                     color = Color.White,
-                    fontSize = 20.sp
+                    fontSize = 20.sp,
+                    fontFamily = FontFamily(Font(R.font.formula1regular))
+
                 )
             }
         }

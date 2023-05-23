@@ -19,6 +19,7 @@ data class Carreras(
     @SerializedName("raceName") val nombreCarrera: String,
     @SerializedName("Circuit") val circuito: Circuitos,
     @SerializedName("date") val fechaCarrera: String,
+    @SerializedName("url") val urlCarrera: String
 )
 
 data class Circuitos(
