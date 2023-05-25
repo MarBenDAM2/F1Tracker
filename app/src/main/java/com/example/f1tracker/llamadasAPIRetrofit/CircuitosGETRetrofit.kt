@@ -53,20 +53,25 @@ class CircuitosGETRetrofit : ViewModel() {
                     }
                 }
             } catch (IndexOutOfBoundsException: Exception) {
-                encontrado = false
+                println("No se ha encontrado el circuito que buscas")
             }
         }
 
     }
     fun conseguirImagen(){
 
-        val referencia = FirebaseStorage.getInstance().getReference("circuitos/${id_Circuito}.jpg")
+        CoroutineScope(Dispatchers.IO).launch{
 
-        referencia.downloadUrl.addOnSuccessListener {
-            linkFoto = it.toString()
-        }.addOnFailureListener {
-            linkFoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+            val referencia = FirebaseStorage.getInstance().getReference("circuitos/${id_Circuito}.jpg")
+
+            referencia.downloadUrl.addOnSuccessListener {
+                linkFoto = it.toString()
+            }.addOnFailureListener {
+                linkFoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+            }
+
         }
+
         encontrado = true
     }
 

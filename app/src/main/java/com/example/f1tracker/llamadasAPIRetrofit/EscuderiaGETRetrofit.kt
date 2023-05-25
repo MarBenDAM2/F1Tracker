@@ -54,12 +54,16 @@ class EscuderiaGETRetrofit : ViewModel() {
 
     fun conseguirImagen(){
 
-        var referencia = FirebaseStorage.getInstance().getReference("escuderias/${idEscuderia}.png")
+        CoroutineScope(Dispatchers.IO).launch {
+            var referencia =
+                FirebaseStorage.getInstance().getReference("escuderias/${idEscuderia}.png")
 
-        referencia.downloadUrl.addOnSuccessListener {
-            linkFoto = it.toString()
-        }.addOnFailureListener {
-            linkFoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+            referencia.downloadUrl.addOnSuccessListener {
+                linkFoto = it.toString()
+            }.addOnFailureListener {
+                linkFoto =
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
+            }
         }
         encontrado = true
     }
