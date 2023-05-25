@@ -2,10 +2,12 @@ package com.example.f1tracker.InterfacesApp
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,17 +17,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.AlertDialog
 import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,6 +36,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.f1tracker.R
@@ -57,7 +57,6 @@ class AutenticacionActivity : ComponentActivity() {
 @Composable
 fun Autenticacion() {
     val contextoActual = LocalContext.current
-    var mostrarError by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -67,13 +66,15 @@ fun Autenticacion() {
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         var email by rememberSaveable { mutableStateOf("") }
+        //Texto de bienvenida
         Text(
-            text = "Registrate o inicia sesion",
+            text = "Registrate o inicia sesión",
             color = Color.White,
             modifier = Modifier.padding(top = 40.dp),
             fontFamily = FontFamily(Font(R.font.formula1regular)),
             fontSize = 20.sp
         )
+        //Columna de registro e inicio de sesión
         Column (
              modifier = Modifier
                  .fillMaxWidth()
@@ -81,6 +82,7 @@ fun Autenticacion() {
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
 
+            //Campo para rellenar el email
             TextField(
                 value = email,
                 onValueChange = { email = it },
@@ -111,6 +113,7 @@ fun Autenticacion() {
 
             var contra by rememberSaveable { mutableStateOf("") }
 
+            //Campo para rellenar la contraseña
             TextField(
                 value = contra,
                 onValueChange = { contra = it },
@@ -138,6 +141,54 @@ fun Autenticacion() {
                 )
             )
 
+            Text(
+                text = "Restablece tu contraseña",
+                color = Color.White,
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .clickable(
+                        onClick = {
+                            if (email.isNotEmpty()) {
+                                FirebaseAuth
+                                    .getInstance()
+                                    .sendPasswordResetEmail(email)
+                                    .addOnCompleteListener {
+                                        if (it.isSuccessful) {
+                                            //Mostrar mensaje de éxito
+                                            Toast
+                                                .makeText(
+                                                    contextoActual,
+                                                    "Se ha enviado un correo para restablecer la contraseña",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        } else {
+                                            //Mostrar mensaje de error
+                                            Toast
+                                                .makeText(
+                                                    contextoActual,
+                                                    "No se pudo enviar el correo, comprueba el email",
+                                                    Toast.LENGTH_LONG
+                                                )
+                                                .show()
+                                        }
+                                    }
+                            } else {
+                                Toast
+                                    .makeText(
+                                        contextoActual,
+                                        "El email está vacío",
+                                        Toast.LENGTH_LONG
+                                    )
+                                    .show()
+                            }
+                        }
+                    ),
+                fontFamily = FontFamily(Font(R.font.formula1regular)),
+                fontSize = 15.sp,
+                textDecoration = TextDecoration.Underline
+            )
+
             Row(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -147,7 +198,7 @@ fun Autenticacion() {
                 OutlinedButton(
                     modifier = Modifier
                         .padding(
-                            top = 50.dp
+                            top = 30.dp
                         )
                         .wrapContentWidth()
                         .height(50.dp)
@@ -160,12 +211,12 @@ fun Autenticacion() {
                                     contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
                                 } else {
                                     //Mostrar mensaje de error
-                                    mostrarError = true
+                                    Toast.makeText(contextoActual, "No se pudo iniciar sesión, comprueba los campos", Toast.LENGTH_LONG).show()
                                 }
                             }
                         } else {
                             //Mostrar mensaje de error
-                            mostrarError = true
+                            Toast.makeText(contextoActual, "El email y/o la contraseña están vacías", Toast.LENGTH_LONG).show()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -182,10 +233,11 @@ fun Autenticacion() {
                     )
                 }
 
+
                 OutlinedButton(
                     modifier = Modifier
                         .padding(
-                            top = 50.dp,
+                            top = 30.dp,
                             start = 16.dp
                         )
                         .wrapContentWidth()
@@ -193,16 +245,18 @@ fun Autenticacion() {
                     ,
                     onClick = {
                         if (email.isNotEmpty() && contra.isNotEmpty()){
+                            //Si el email y la contraseña no están vacías, se registra al usuario mediante el lanzamiento de una corrutina
                             CoroutineScope(Dispatchers.IO).launch{
-                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, contra).addOnCompleteListener{
+                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.toLowerCase(), contra).addOnCompleteListener{
                                     if (it.isSuccessful){
                                         contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
                                     } else {
-                                        //Mostrar mensaje de error
-                                        mostrarError = true
+                                        Toast.makeText(contextoActual, "No se pudo registrar, es posible que sea porque la contraseña tenga menos de 6 caracteres o el ya email exista", Toast.LENGTH_LONG).show()
                                     }
                                 }
                             }
+                        } else {
+                            Toast.makeText(contextoActual, "El email y/o la contraseña están vacías", Toast.LENGTH_LONG).show()
                         }
                     },
                     colors = ButtonDefaults.buttonColors(
@@ -221,49 +275,4 @@ fun Autenticacion() {
             }
         }
     }
-
-    if(mostrarError){
-        AlertDialog(
-            backgroundColor = Color.DarkGray,
-            onDismissRequest = {
-                mostrarError = false
-            },
-            title = {
-                Text(
-                    text = "Error",
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.formula1regular))
-                )
-            },
-            text = {
-                Text(
-                    text = "Ha ocurrido un error con el registro o el inicio de sesión, " +
-                            "por favor compruebe la información ingresada",
-                    color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.formula1regular))
-                )
-            },
-            confirmButton = {
-                Button(
-                    onClick = {
-                        mostrarError = false
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(0),
-                    border = BorderStroke(1.dp, Color.White)
-                ) {
-                    Text(
-                        text = "Aceptar",
-                        color = Color.White,
-                        fontSize = 15.sp,
-                        fontFamily = FontFamily(Font(R.font.formula1regular))
-                    )
-                }
-            }
-        )
-    }
-
-
 }

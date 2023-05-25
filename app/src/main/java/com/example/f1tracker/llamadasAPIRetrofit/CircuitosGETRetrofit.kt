@@ -1,5 +1,6 @@
 package com.example.f1tracker.llamadasAPIRetrofit
 
+import android.widget.Toast
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -21,6 +22,7 @@ class CircuitosGETRetrofit : ViewModel() {
     var localidadCircuito by mutableStateOf("")
     var paisCircuito by mutableStateOf("")
     var linkFoto by mutableStateOf("")
+    var encontrado by mutableStateOf(false)
 
 
     fun getRetrofit(): Retrofit {
@@ -51,7 +53,7 @@ class CircuitosGETRetrofit : ViewModel() {
                     }
                 }
             } catch (IndexOutOfBoundsException: Exception) {
-                println("No se ha encontrado el circuito")
+                encontrado = false
             }
         }
 
@@ -65,6 +67,7 @@ class CircuitosGETRetrofit : ViewModel() {
         }.addOnFailureListener {
             linkFoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
         }
+        encontrado = true
     }
 
 }

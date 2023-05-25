@@ -3,6 +3,7 @@ package com.example.f1tracker.InterfacesApp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -72,7 +73,6 @@ class EscuderiasActivity : ComponentActivity() {
     fun EscuderiaInformacion(EscuderiaViewModel: EscuderiaGETRetrofit){
         val contextoActual = LocalContext.current
         val TAM_IMAGEN = 250.dp
-        var mostrarInfo by remember { mutableStateOf(false) }
 
 
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////
@@ -103,7 +103,6 @@ class EscuderiasActivity : ComponentActivity() {
                         CoroutineScope(Dispatchers.IO).launch {
                             EscuderiaViewModel.busquedaPorNombre(texto_busqueda.value)
                         }
-                        mostrarInfo = true
                     }
                 ),
                 modifier = Modifier
@@ -124,7 +123,8 @@ class EscuderiasActivity : ComponentActivity() {
         }
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////
 
-        if (mostrarInfo){
+        //Si la variable encontrado es verdadera se mostrará la información.
+        if (EscuderiaViewModel.encontrado){
             /////////////////////////// INFORMACIÓN DEL CONSTRUCTOR ///////////////////////////
             Column(
                 modifier = Modifier
@@ -179,6 +179,7 @@ class EscuderiasActivity : ComponentActivity() {
                             color = Color.White,
                             fontFamily = FontFamily(Font(R.font.formula1regular))
                         )
+                        //Texto clickeable que nos lleva a la wikipedia del constructor
                         Text(
                             text = EscuderiaViewModel.urlEscuderia,
                             modifier = Modifier

@@ -14,42 +14,55 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.F1Tracker"
         android:usesCleartextTraffic="true"
-        android:screenOrientation="portrait"
         tools:targetApi="31">
         <activity
             android:name=".InterfacesApp.InicioAplicacion"
             android:exported="false"
             android:label="@string/title_activity_inicio_aplicacion"
-            android:theme="@style/Theme.F1Tracker" />
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".InterfacesApp.CalendarioActivity"
             android:exported="false"
             android:label="@string/title_activity_calendario"
-            android:theme="@style/Theme.F1Tracker" />
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".InterfacesApp.EscuderiasActivity"
             android:exported="false"
             android:label="@string/title_activity_escuderias"
-            android:theme="@style/Theme.F1Tracker" />
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".InterfacesApp.PilotosActivity"
             android:exported="false"
             android:label="@string/title_activity_pilotos"
-            android:theme="@style/Theme.F1Tracker" />
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".InterfacesApp.CircuitosActivity"
             android:exported="false"
             android:label="@string/title_activity_circuitos"
-            android:theme="@style/Theme.F1Tracker" />
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".InterfacesApp.MenuPrinicipal"
             android:exported="false"
             android:label="@string/title_activity_menu_prinicipal"
-            android:theme="@style/Theme.F1Tracker" />
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".InterfacesApp.AutenticacionActivity"
             android:exported="true"
-            android:theme="@style/Theme.F1Tracker">
+            android:theme="@style/Theme.F1Tracker"
+            android:screenOrientation="portrait"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

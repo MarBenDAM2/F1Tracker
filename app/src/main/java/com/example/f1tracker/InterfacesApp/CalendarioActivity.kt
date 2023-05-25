@@ -3,6 +3,7 @@ package com.example.f1tracker.InterfacesApp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -26,11 +27,8 @@ import androidx.compose.material.TextField
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -81,7 +79,6 @@ class CalendarioActivity : ComponentActivity() {
         val TAM_TEXTO = 10.sp
 
         /////////////// SELECCION DE AÑO //////////
-        var mostrarInfo by remember { mutableStateOf(false) }
         val yearActual = Calendar.getInstance().get(Calendar.YEAR)
 
         Row(
@@ -89,6 +86,7 @@ class CalendarioActivity : ComponentActivity() {
                 .fillMaxWidth()
                 .background(color = Color.DarkGray)
         ) {
+            //rememberSaveable es para que no se borre el texto al rotar la pantalla
             val texto_busqueda = rememberSaveable { mutableStateOf("") }
             TextField(
                 value = texto_busqueda.value,
@@ -108,10 +106,28 @@ class CalendarioActivity : ComponentActivity() {
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            CalendarioViewModel.busquedaPorYear(texto_busqueda.value)
+                        //Si el año está entre 1950 y 2023 ejecutamos la busqueda en modo de corrutina
+                        try {
+                            if (texto_busqueda.value.toInt() in 1950..yearActual) {
+                                CoroutineScope(Dispatchers.IO).launch {
+                                    CalendarioViewModel.busquedaPorYear(texto_busqueda.value)
+                                }
+                            } else {
+                                //Si no, mostramos un toast de error de año
+                                Toast.makeText(
+                                    contextoActual,
+                                    "Introduce un año entre 1950 y $yearActual",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: NumberFormatException){
+                            Toast.makeText(
+                                contextoActual,
+                                "Introduce un año sin simbolos",
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
-                        mostrarInfo = true
+
                     }
                 ),
                 modifier = Modifier
@@ -138,7 +154,8 @@ class CalendarioActivity : ComponentActivity() {
         */
         /////////////// SELECCION DE AÑO //////////
 
-        //DATOS//
+        //Mostramos la columna solamente si ha encontrado los datos
+        // (de tal forma que cuando entremos no se mostrará nada)
         if (CalendarioViewModel.terminado) {
             LazyColumn(
                 modifier = Modifier
@@ -147,17 +164,20 @@ class CalendarioActivity : ComponentActivity() {
                     .padding(5.dp)
             ){
                 items(CalendarioViewModel.listaCarreras.size){
+
                     Row(
                         modifier = Modifier
                             .fillMaxHeight()
                             .fillMaxWidth()
                             .padding(vertical = 10.dp)
                             .clickable(onClick = {
+                                //Hacemos que cada fila que se genere sea clickable con el enlace de cada carrera
                                 val uri = Uri.parse(CalendarioViewModel.listaCarreras[it].urlCarrera)
                                 contextoActual.startActivity(Intent(Intent.ACTION_VIEW, uri))
                             }),
                         horizontalArrangement = Arrangement.Start
                     ) {
+                        //Columna 1 con el numero de carrera
                         Column(
                             modifier = Modifier
                                 .width(ANCHO_NUMERO)
@@ -180,7 +200,7 @@ class CalendarioActivity : ComponentActivity() {
                                 fontFamily = FontFamily(Font(R.font.formula1regular))
                             )
                         }
-
+                        //Columna 2 con el nombre de la carrera
                         Column(
                             modifier = Modifier
                                 .width(ANCHO_CELDA_NOMBRE)
@@ -223,7 +243,7 @@ class CalendarioActivity : ComponentActivity() {
                                 )
                             }
                         }
-
+                        //Columna 3 con la fecha de la carrera
                         Column(
                             modifier = Modifier
                                 .width(ANCHO_CELDA_FECHA)
@@ -251,6 +271,5 @@ class CalendarioActivity : ComponentActivity() {
                 }
             }
         }
-        //DATOS//
     }
 }

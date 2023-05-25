@@ -18,6 +18,7 @@ class EscuderiaGETRetrofit : ViewModel() {
     var nacionalidad : String by mutableStateOf("")
     var urlEscuderia : String by mutableStateOf("")
     var linkFoto by mutableStateOf("")
+    var encontrado by mutableStateOf(false)
 
 
     fun getRetrofit(): Retrofit {
@@ -45,7 +46,7 @@ class EscuderiaGETRetrofit : ViewModel() {
                     }
                 }
             } catch (IndexOutOfBoundsException: Exception) {
-                println("No se ha encontrado la escudería")
+                print("Error")
             }
         }
 
@@ -60,6 +61,7 @@ class EscuderiaGETRetrofit : ViewModel() {
         }.addOnFailureListener {
             linkFoto = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/bc/Unknown_person.jpg/694px-Unknown_person.jpg"
         }
+        encontrado = true
     }
 
 }

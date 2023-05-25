@@ -108,8 +108,9 @@ fun Opcion(textoApartado: String, descripcionApartado: String, imagenApartado: I
 
     val contextoActual = LocalContext.current
 
-    var actividad: Class<*>? = null
+    var actividad: Class<*>? = null // Variable para almacenar la actividad a la que se quiere ir
 
+    // Segun el texto que se le pase, se le asigna una actividad
     when (textoApartado){
         "PILOTOS" -> {
             actividad = PilotosActivity::class.java
@@ -125,6 +126,7 @@ fun Opcion(textoApartado: String, descripcionApartado: String, imagenApartado: I
         }
     }
 
+    //Fila de la opcion
     Row(
         modifier = Modifier
             .wrapContentWidth()
@@ -132,12 +134,14 @@ fun Opcion(textoApartado: String, descripcionApartado: String, imagenApartado: I
             .padding(20.dp)
             .border(1.dp, Color.White)
             .clickable(
+                //Si clickamos esa opcion nos llevara a la actividad correspondiente
                 onClick = {
                     contextoActual.startActivity(Intent(contextoActual, actividad))
                 }
             ),
         verticalAlignment = Alignment.CenterVertically
     ){
+        //Columna con la fila de la opcion y otra fila con la descripcion
         Column(
             modifier = Modifier
                 .width(250.dp)
@@ -167,6 +171,7 @@ fun Opcion(textoApartado: String, descripcionApartado: String, imagenApartado: I
                 )
             }
         }
+        //Columna con la imagen de la opcion
         Column(
             modifier = Modifier
                 .wrapContentHeight(),

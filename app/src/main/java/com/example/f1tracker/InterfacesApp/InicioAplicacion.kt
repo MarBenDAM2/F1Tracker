@@ -49,6 +49,7 @@ class InicioAplicacion : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            //Aqui generamos primero el carrusel y luego el fondo gradiente, ya que si no, las imagenes quedarían por encima del gradiente
             Carousel()
             FondoGradiente()
         }
@@ -58,11 +59,13 @@ class InicioAplicacion : ComponentActivity() {
 @Composable
 fun FondoGradiente(){
     val contextoActual = LocalContext.current
+    //En esta constante guardamos el porcentaje de la pantalla que queremos que ocupe el color
     val colores = arrayOf(
         0.0f to Color(Color.Unspecified.value),
         0.8f to Color(Color(94,94,94).value),
         1.0f to Color(Color.DarkGray.value)
     )
+    //En esta columna hacemos el uso de esa variable en el gradiente para que se vea el efecto
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -71,7 +74,7 @@ fun FondoGradiente(){
             .background(
                 brush = Brush.verticalGradient(
                     colorStops = colores,
-                    endY = 1200f
+                    endY = 1200f //Este valor lo aumentaremos o disminuiremos para que se vea el efecto empezando desde abajo hasta arriba
                 )
             )
 
@@ -85,6 +88,7 @@ fun FondoGradiente(){
                 ),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            //Hacemos una caja con el titulo y la bienvenida a la aplicación
             Box(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -116,6 +120,7 @@ fun FondoGradiente(){
                 modifier = Modifier
                     .height(20.dp)
             )
+            //Segunda caja transmitiendo lo que hace la aplicación
             Box(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -144,6 +149,7 @@ fun FondoGradiente(){
                     fontFamily = FontFamily(Font(R.font.formula1regular))
                 )
             }
+            //Boton para iniciar la aplicación
             OutlinedButton(
                 modifier = Modifier
                     .padding(
@@ -166,13 +172,13 @@ fun FondoGradiente(){
                     color = Color.White,
                     fontSize = 20.sp,
                     fontFamily = FontFamily(Font(R.font.formula1regular))
-
                 )
             }
         }
     }
 }
 
+//Aqui definimos la base del carrusel, que es una tarjeta con una llamada al carrusel automático
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun Carousel(){
@@ -187,13 +193,18 @@ fun Carousel(){
         shape = RoundedCornerShape(0.dp),
     ) {
         AutoSlidingCarousel(
+            //Le pasamos por parámetro la cantidad de imágenes que tenemos en el carrusel
             itemsCount = images.size,
+            //Le pasamos por parámetro la imagen que queremos que se muestre en cada posición
             itemContent = { index ->
+                //En este caso será un asyncImage, que es una imagen que se carga de forma asíncrona
                 AsyncImage(
+                    //Se hace un peticion de la imagen
                     model = ImageRequest.Builder(LocalContext.current)
                         .data(images[index])
                         .build(),
                     contentDescription = null,
+                    //Se le da un tamaño y un recorte
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.height(340.dp)
                 )
@@ -205,18 +216,25 @@ fun Carousel(){
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AutoSlidingCarousel(
+    //Ponemos el parámetro de modificador (usado para la altura)
     modifier: Modifier = Modifier,
-    autoSlideDuration: Long = 6000,
+    //Ponemos el parámetro de duración de la transición
+    autoSlideDuration: Long = 4000,
+    //Ponemos el parámetro del estado del carrusel
     pagerState: PagerState = remember { PagerState() },
+    //Ponemos el parámetro de la cantidad de imágenes que tenemos en el carrusel
     itemsCount: Int,
+    //Ponemos el parámetro de la imagen que queremos que se muestre en cada posición
     itemContent: @Composable (index: Int) -> Unit,
 ) {
 
+    //Hacemos un efecto de lanzamiento para que se mueva el carrusel y que se recomponga asi mismo cada vez que pase la imagen
     LaunchedEffect(pagerState.currentPage) {
         delay(autoSlideDuration)
         pagerState.animateScrollToPage((pagerState.currentPage + 1) % itemsCount)
     }
 
+    //Caja con el horizontal pager que es el que nos permite mostrar el carrusel
     Box(
         modifier = modifier.fillMaxWidth(),
     ) {

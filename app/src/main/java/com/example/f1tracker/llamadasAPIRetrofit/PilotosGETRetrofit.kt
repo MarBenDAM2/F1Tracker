@@ -1,13 +1,18 @@
 package com.example.f1tracker.llamadasAPIRetrofit
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.f1tracker.InterfacesAPI.APIpiloto
+import com.example.f1tracker.InterfacesApp.PilotosActivity
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -30,7 +35,7 @@ class PilotosGETRetrofit : ViewModel() {
             .build()
     }
 
-    fun busquedaPorNombre(busqueda: String) {
+    fun busquedaPorNombre(busqueda: String){
         CoroutineScope(Dispatchers.IO).launch {
             val llamada = getRetrofit().create(APIpiloto::class.java)
                 .pilotoInformacion("${busqueda.replace("\\s+".toRegex(), "_")}.json")
@@ -70,7 +75,7 @@ class PilotosGETRetrofit : ViewModel() {
                     }
                 }
             } catch (IndexOutOfBoundsException: Exception) {
-                println("No se encontró el piloto")
+                print("Error")
             }
         }
     }
@@ -98,5 +103,6 @@ class PilotosGETRetrofit : ViewModel() {
         encontrado = true
 
     }
+
 
 }

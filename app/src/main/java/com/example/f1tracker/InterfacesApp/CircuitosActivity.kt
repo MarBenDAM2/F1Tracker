@@ -3,6 +3,7 @@ package com.example.f1tracker.InterfacesApp
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -72,14 +73,14 @@ class CircuitosActivity : ComponentActivity() {
     @Composable
     fun CircuitoInformacion(CircuitoViewModel: CircuitosGETRetrofit){
         val contextoActual = LocalContext.current
-        val TAM_IMAGEN = 250.dp
-        var mostrarInfo by remember { mutableStateOf(false) }
+        val TAM_IMAGEN = 310.dp
         Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(color = Color.DarkGray)
         ) {
             val texto_busqueda = rememberSaveable { mutableStateOf("") }
+            //Campo para buscar el circuito
             TextField(
                 value = texto_busqueda.value,
                 onValueChange = {
@@ -98,10 +99,10 @@ class CircuitosActivity : ComponentActivity() {
                 ),
                 keyboardActions = KeyboardActions(
                     onSearch = {
+                        //Corrutina de busqueda de circuito
                         CoroutineScope(Dispatchers.IO).launch {
                             CircuitoViewModel.busquedaPorNombre(texto_busqueda.value)
                         }
-                        mostrarInfo = true
                     }
                 ),
                 modifier = Modifier
@@ -121,7 +122,8 @@ class CircuitosActivity : ComponentActivity() {
             )
         }
 
-        if (mostrarInfo){
+        //Si se ha encontrado el circuito mostramos los datos
+        if (CircuitoViewModel.encontrado){
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -130,15 +132,17 @@ class CircuitosActivity : ComponentActivity() {
                     .background(color = Color.DarkGray),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
+                //Imagen del circuito, es necesario el AsyncImage ya que cogemos la imagen de una URL
                 AsyncImage(
                     model = CircuitoViewModel.linkFoto,
                     contentDescription = "Imagen del circuito",
                     modifier = Modifier
-                        .padding(top = 50.dp)
+                        .padding(top = 20.dp)
                         .width(TAM_IMAGEN)
                         .height(TAM_IMAGEN),
                 )
                 Spacer(modifier = Modifier.height(10.dp))
+                //Fila con la columna de la informacion del circuito
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -168,6 +172,7 @@ class CircuitosActivity : ComponentActivity() {
                             color = Color.White,
                             fontFamily = FontFamily(Font(R.font.formula1regular))
                         )
+                        //Texto clickable que nos lleva a la wikipedia del circuito
                         Text(
                             text = CircuitoViewModel.linkCircuito,
                             fontFamily = FontFamily(Font(R.font.formula1regular)),
@@ -181,6 +186,7 @@ class CircuitosActivity : ComponentActivity() {
                                 .padding(bottom = 10.dp),
                             textAlign = TextAlign.Center
                         )
+                        //Caja con columnas y lineas sobre la información de la localización.
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -214,7 +220,7 @@ class CircuitosActivity : ComponentActivity() {
                                         )
                                     }
                                 }
-                                Spacer(modifier = Modifier.height(20.dp))
+                                Spacer(modifier = Modifier.height(10.dp))
                                 Row{
                                     Column {
                                         Text(
