@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.lifecycle.ViewModel
 import com.example.f1tracker.InterfacesAPI.APICalendario
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,7 +29,10 @@ class CalendarioGETRetrofit : ViewModel() {
 
 
     fun busquedaPorYear(busqueda:String){
-        CoroutineScope(Dispatchers.IO).launch{
+        val controlExcepcion = CoroutineExceptionHandler { _, throwable ->
+            println("Error, no hay conexion a internet")
+        }
+        CoroutineScope(Dispatchers.IO + controlExcepcion).launch{
             val llamada = getRetrofit().create(APICalendario::class.java).calendarioInformacion("${busqueda}.json")
 
             try{

@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.example.f1tracker.InterfacesAPI.APICircuitos
 import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +34,10 @@ class CircuitosGETRetrofit : ViewModel() {
     }
 
     fun busquedaPorNombre(busqueda:String){
-        CoroutineScope(Dispatchers.IO).launch{
+        val controlExcepcion = CoroutineExceptionHandler { _, throwable ->
+            println("Error, no hay conexion a internet")
+        }
+        CoroutineScope(Dispatchers.IO + controlExcepcion).launch{
             val llamada = getRetrofit().create(APICircuitos::class.java).circuitoInformacion("${busqueda.replace("\\s+".toRegex(), "_")}.json")
 
             try{
