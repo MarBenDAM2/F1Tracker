@@ -167,7 +167,7 @@ fun Autenticacion() {
                                             Toast
                                                 .makeText(
                                                     contextoActual,
-                                                    "No se pudo enviar el correo, comprueba el email",
+                                                    "No se pudo enviar el correo, comprueba el email o tu conexión a internet",
                                                     Toast.LENGTH_LONG
                                                 )
                                                 .show()
@@ -214,7 +214,7 @@ fun Autenticacion() {
                                     contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
                                 } else {
                                     //Mostrar mensaje de error
-                                    Toast.makeText(contextoActual, "No se pudo iniciar sesión, comprueba los campos", Toast.LENGTH_LONG).show()
+                                    Toast.makeText(contextoActual, "No se pudo iniciar sesión, comprueba los campos o tu conexión a internet", Toast.LENGTH_LONG).show()
                                 }
                             }
                         } else {
@@ -258,7 +258,7 @@ fun Autenticacion() {
                                         //
                                         contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
                                     } else {
-                                        Toast.makeText(contextoActual, "No se pudo registrar, es posible que sea porque la contraseña tenga menos de 6 caracteres o el ya email exista", Toast.LENGTH_LONG).show()
+                                        Toast.makeText(contextoActual, "No se pudo registrar, comprueba la conexión a internet, que la contraseña tenga 6 caracteres o más y que el email sea correcto (es posible que ya esté registrado)", Toast.LENGTH_LONG).show()
                                     }
                                 }
                             }
