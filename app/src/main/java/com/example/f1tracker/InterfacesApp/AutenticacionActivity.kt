@@ -205,8 +205,11 @@ fun Autenticacion() {
                     ,
                     onClick = {
                         if (email.isNotEmpty() && contra.isNotEmpty()){
-                            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, contra).addOnCompleteListener{
+                            FirebaseAuth.getInstance().signInWithEmailAndPassword(email.lowercase(), contra).addOnCompleteListener{
                                 if (it.isSuccessful){
+                                    //
+                                    email = ""
+                                    contra = ""
                                     //Intent a InicioAplicacion
                                     contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
                                 } else {
@@ -247,8 +250,12 @@ fun Autenticacion() {
                         if (email.isNotEmpty() && contra.isNotEmpty()){
                             //Si el email y la contraseña no están vacías, se registra al usuario mediante el lanzamiento de una corrutina
                             CoroutineScope(Dispatchers.IO).launch{
-                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.toLowerCase(), contra).addOnCompleteListener{
+                                FirebaseAuth.getInstance().createUserWithEmailAndPassword(email.lowercase(), contra).addOnCompleteListener{
                                     if (it.isSuccessful){
+                                        //
+                                        email = ""
+                                        contra = ""
+                                        //
                                         contextoActual.startActivity(Intent(contextoActual, InicioAplicacion::class.java))
                                     } else {
                                         Toast.makeText(contextoActual, "No se pudo registrar, es posible que sea porque la contraseña tenga menos de 6 caracteres o el ya email exista", Toast.LENGTH_LONG).show()

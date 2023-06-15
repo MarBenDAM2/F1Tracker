@@ -1,8 +1,6 @@
 package com.example.f1tracker.InterfacesApp
 
-import android.content.Context
 import android.os.Bundle
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -29,7 +27,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.ImeAction
@@ -58,13 +55,10 @@ class PilotosActivity : ComponentActivity() {
             ) {
                 PilotoInformacion(PilotosGETRetrofit)
             }
-
         }
     }
     @Composable
     fun PilotoInformacion(PilotosGETRetrofit: PilotosGETRetrofit) {
-        val contextoActual = LocalContext.current
-
 
         val TAM_IMAGEN = 250.dp
         /////////////////////////// BUSQUEDA POR NOMBRE ///////////////////////////

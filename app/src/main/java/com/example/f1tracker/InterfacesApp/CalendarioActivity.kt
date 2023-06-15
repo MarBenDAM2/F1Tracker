@@ -266,7 +266,6 @@ class CalendarioActivity : ComponentActivity() {
                                     .padding(horizontal = 4.dp)
                             )
                         }
-
                     }
                 }
             }

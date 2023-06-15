@@ -216,10 +216,8 @@ fun Carousel(){
 @OptIn(ExperimentalPagerApi::class)
 @Composable
 fun AutoSlidingCarousel(
-    //Ponemos el parámetro de modificador (usado para la altura)
-    modifier: Modifier = Modifier,
     //Ponemos el parámetro de duración de la transición
-    autoSlideDuration: Long = 4000,
+    duracion: Long = 4000,
     //Ponemos el parámetro del estado del carrusel
     pagerState: PagerState = remember { PagerState() },
     //Ponemos el parámetro de la cantidad de imágenes que tenemos en el carrusel
@@ -230,13 +228,13 @@ fun AutoSlidingCarousel(
 
     //Hacemos un efecto de lanzamiento para que se mueva el carrusel y que se recomponga asi mismo cada vez que pase la imagen
     LaunchedEffect(pagerState.currentPage) {
-        delay(autoSlideDuration)
+        delay(duracion)
         pagerState.animateScrollToPage((pagerState.currentPage + 1) % itemsCount)
     }
 
     //Caja con el horizontal pager que es el que nos permite mostrar el carrusel
     Box(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth(),
     ) {
         HorizontalPager(count = itemsCount, state = pagerState) { page ->
             itemContent(page)
